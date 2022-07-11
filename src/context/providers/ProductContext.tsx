@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext, ReactNode } from 'react';
 
-type Action = {type: 'update_inventory', payload: any} | {type: 'clear_inventory', payload: any} | {type: 'set_inventory', payload: any}
+type Action = {type: 'update_inventory', payload: any} | {type: 'clear_inventory', payload?: any} | {type: 'set_inventory', payload: any}
 type Dispatch = (action: Action) => void
 type State = {inventory: []}
 type ProductProviderProps = {children: ReactNode}

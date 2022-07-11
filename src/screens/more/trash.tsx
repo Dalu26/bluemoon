@@ -49,15 +49,17 @@ const Trash: FC<TrashProps> = ({ navigation }) => {
 
     const restoreProduct = (data) => {
         setLoading(true)
-        const {id, name, prices, deleted } = data
+        const {id, name, price, deleted, totalStock, description } = data
         const inventory = products
         const prodIndex = inventory.findIndex(item => item.id === id)
         
         const productObject = {
             id, 
             name, 
-            prices, 
-            deleted: false
+            price, 
+            totalStock,
+            description,
+            deleted: !deleted
         }
         inventory.splice(prodIndex, 1, productObject)
         dispatch({
@@ -73,7 +75,7 @@ const Trash: FC<TrashProps> = ({ navigation }) => {
     }
     
     const renderItem = useCallback(({item, index}) => {
-        const { name, id, prices, deleted } = item
+        const { name, id, price, deleted } = item
         return(
             <React.Fragment>
                 <Animatable.View
@@ -85,7 +87,7 @@ const Trash: FC<TrashProps> = ({ navigation }) => {
                     style={[{width: '100%'}]}>
                     <EditRow
                         name={name}
-                        prices={prices}
+                        price={price}
                         item={item}
                         disabled={deleted}
                         restore={() => openModal(item)}
@@ -111,8 +113,7 @@ const Trash: FC<TrashProps> = ({ navigation }) => {
                 start={{x: 0.5, y: 0}}>
                 <View style={[header, flexRow]}>
                     <Pressable 
-                        // onPress={() => change()}
-                        // onPress={() => navigation.goBack()} 
+                        onPress={() => navigation.goBack()} 
                         style={[backArrow, centerContentStyle]}>
                             <Icon 
                                 name="chevron-left" 
@@ -179,7 +180,6 @@ const styles = StyleSheet.create({
     },
     header: {
         width: '100%',
-        // paddingLeft: wp(14),
         height: hp(50),
         alignItems: 'center',
     },

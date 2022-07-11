@@ -10,12 +10,16 @@ import { shortenXterLength, formatPrice } from '../../utils/helpers';
 import { hp, wp, fontSz } from '../../utils/constants';
 
 interface EditRowProps {
-    name?: string
-
+    name?: string,
+    deleteItem?: Function,
+    price?: string | number ,
+    restore?: Function
+    disabled?: boolean,
+    item?: any
 }
 const EditRow: FC<EditRowProps> = ({
     name, 
-    prices, 
+    price, 
     deleteItem, 
     item, 
     disabled, 
@@ -23,7 +27,7 @@ const EditRow: FC<EditRowProps> = ({
 }) => {
     const navigation = useNavigation()
     const toEdit = () => {
-        // navigation.navigate('Edit', item)
+        navigation.navigate('Product', {screen: 'Edit', params: item})
     }
 
     const { container, textPrice, prodName, deleteStyle } = styles
@@ -32,7 +36,7 @@ const EditRow: FC<EditRowProps> = ({
         <View style={[container, flexRow]}>
             <Pressable 
                 disabled={disabled}
-                // onPress={() => toEdit()}
+                onPress={() => toEdit()}
                 hitSlop={10} 
                 style={{
                     flex: 1, opacity: disabled ? 0.5 : 1
@@ -47,7 +51,7 @@ const EditRow: FC<EditRowProps> = ({
                         style={[
                             textPrice, textPoppinsBold
                         ]}>
-                        {/* {formatPrice("en-US", 'USD', prices[0]?.price)} */}
+                        {formatPrice("en-US", 'USD', price?.toString())}
                     </MyText>
             </Pressable>
             <TouchableOpacity
@@ -89,7 +93,7 @@ const styles = StyleSheet.create({
         color: colors.darkPurple
     },
     textPrice: {
-        // color: colors.darkPurple,
+        color: colors.darkBlue,
         fontSize: fontSz(10)
     },
     deleteStyle: {

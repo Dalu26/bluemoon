@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext, memo, ReactNode } from 'react';
 
-type Action = {type: 'update_user', payload: any} | {type: 'clear_user', payload: any}
+type Action = {type: 'update_user', payload: any} | {type: 'clear_user', payload?: any}
 type Dispatch = (action: Action) => void
 type State = {user: {}}
 type UserProviderProps = {children: ReactNode}
