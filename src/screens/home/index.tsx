@@ -5,12 +5,11 @@ import Icon from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import { MyText } from '../../utils/common/index';
-import { getInventory, cacheInventory } from '../../utils/helpers';
 import colors from '../../utils/colors';
 import GStyles from '../../assets/styles/GeneralStyles';
 import { fontSz, wp, hp, FADE_IN } from '../../utils/constants';
 import { useProduct } from '../../context/providers/ProductContext';
-// import Card from '../../components/general/Card';
+import Card from '../../components/general/Card';
 import ListEmpty from '../../components/general/ListEmpty';
 
 interface HomeProps {
@@ -18,12 +17,10 @@ interface HomeProps {
 }
 
 const Home: FC<HomeProps> = ({ navigation }) => {
-    const { state, productDispatch } = useProduct();
+    const { state } = useProduct();
     const products = state.inventory;
-    const dispatch = productDispatch;
     const isFocused = useIsFocused();
     const [availableProducts, setAvailableProducts] = useState([]);
-    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         getAvailableProducts(products)
@@ -40,34 +37,29 @@ const Home: FC<HomeProps> = ({ navigation }) => {
     }
 
     const renderItems = ({item, index}) => {
-        const { id, name, prices, deleted } = item;
+        const { id, name, price, totalStock, description } = item;
         return(
-            <React.Fragment>
-                <Animatable.View
+            <Animatable.View
+                key={index}
+                animation={FADE_IN}
+                duration={700}
+                useNativeDriver={true}
+                delay={400 + index * 100}>
+                <Card 
                     key={index}
-                    animation={FADE_IN}
-                    duration={700}
-                    useNativeDriver={true}
-                    delay={400 + index * 100}
-                    style={[{width: '50%'}, centerContentStyle]}
-                >
-                    {/* <Card 
-                        key={index}
-                        name={name}
-                        prices={prices}
-                        id={id} 
-                    /> */}
-                    <MyText>{name}</MyText>
-                    <MyText>{id}</MyText>
-                    <MyText>{item.name}</MyText>
-                    <MyText>{item.name}</MyText>
-                </Animatable.View>
-            </React.Fragment>
+                    name={name}
+                    price={price}
+                    id={id} 
+                    description={description}
+                    totalStock={totalStock}
+                    item={item}
+                />
+            </Animatable.View>
         )
     }
 
     const { container, header, headerText, wrapper } = styles;
-    const { textPoppinsBold, centerContentStyle, flexRow } = GStyles;
+    const { textPoppinsBold, flexRow } = GStyles;
 
     return(
         <SafeAreaView style={wrapper}>
@@ -88,7 +80,7 @@ const Home: FC<HomeProps> = ({ navigation }) => {
                 </View>
                 <FlatList
                     data={availableProducts}
-                    numColumns={2}
+                    // numColumns={2}
                     showsVerticalScrollIndicator={false}
                     renderItem={renderItems}
                     contentContainerStyle={{

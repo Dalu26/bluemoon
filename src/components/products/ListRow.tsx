@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
         height: hp(35),
         width: wp(35),
         borderRadius: hp(6),
-        // backgroundColor: 'rgba(255, 81, 0, 0.1)',
         backgroundColor: '#e1d5f5'
     }
 })

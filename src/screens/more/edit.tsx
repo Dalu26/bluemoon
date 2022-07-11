@@ -300,16 +300,16 @@ const styles = StyleSheet.create({
     },
     deleteWrp: {
         alignSelf: 'center',
-        marginTop: hp(30),
+        marginTop: hp(35),
         borderWidth: 0.5,
         borderColor: '#DC143C',
-        paddingHorizontal: wp(10),
+        paddingHorizontal: wp(15),
         paddingVertical: hp(3),
         borderRadius: hp(4),
-        backgroundColor: 'rgba(220, 20, 60, 0.1)'
+        backgroundColor: 'rgba(220, 20, 60, 0.09)'
     },
     textDelete: {
-        fontSize: fontSz(16),
+        fontSize: fontSz(18),
         color: '#DC143C'
     },
     toast: {

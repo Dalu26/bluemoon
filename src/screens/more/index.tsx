@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar, ToastAndroid } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
@@ -48,7 +48,7 @@ const More: FC<MoreProps> = ({ navigation }) => {
     const handleClearCache = () => {
         productDispatch({type: 'clear_inventory'})
         clearCachedData().then(
-            setToasts([...toasts, 'Cache Cleared'])
+            setToasts([...toasts, 'Products Cleared'])
         )
     }
 
@@ -104,7 +104,7 @@ const More: FC<MoreProps> = ({ navigation }) => {
                         </View>
                         <View>
                             <CustomButton
-                                buttonText='Clear Cache'
+                                buttonText='Clear Products'
                                 buttonStyle={{
                                     marginBottom: hp(8)
                                 }}
