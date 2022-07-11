@@ -34,7 +34,7 @@ git clone https://github.com/Dalu26/bluemoon.git
 ### Switch to the directory
 
 ```sh
-cd weather
+cd bluemoon
 ```
 
 ### Install the dependencies
