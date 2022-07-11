@@ -1,34 +1,37 @@
 import React, { useState, FC } from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, Pressable, ScrollView, Keyboard, View } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar, Pressable, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import { NavigationProp } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/Feather';
 import { MyText, CustomInput, CustomButton } from '../../utils/common/index';
 import CustomToast from '../../components/general/CustomToast';
+import { cacheInventory, titleCase , formatPrice } from '../../utils/helpers';
 import colors from '../../utils/colors';
 import GStyles from '../../assets/styles/GeneralStyles';
-import { cacheInventory, titleCase } from '../../utils/helpers';
 import { hp, wp, fontSz } from '../../utils/constants';
 import { useProduct } from '../../context/providers/ProductContext';
 
-interface CreateProductProps {
-    navigation?: NavigationProp
+interface EditProps {
+    navigation?: NavigationProp,
+    route?: NavigationProp
 }
 
-const CreateProduct: FC<CreateProductProps> = ({ navigation }) => {
+const Edit: FC<EditProps> = ({ navigation, route }) => {
+    const item = route.params;
+    const ID = item.id;
     const { state, productDispatch } = useProduct();
     const products = state.inventory;
     const dispatch = productDispatch;
-    const [name, setName] = useState('');
-    const [price, setPrice] = useState('');
-    const [totalStock, setTotalStock] = useState('');
-    const [description, setDescription] = useState('');
+    const [toasts, setToasts] = useState([]);
+    const [name, setName] = useState(item?.name);
+    const [price, setPrice] = useState(item.price.toString());
+    const [totalStock, setTotalStock] = useState(item?.totalStock.toString());
+    const [description, setDescription] = useState(item?.description);
     const [nameError, setNameError] = useState('');
     const [priceError, setPriceError] = useState('');
     const [stockError, setStockError] = useState('');
     const [descError, setDescError] = useState('');
-    const [toasts, setToasts] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
 
     const disabled = () => {
         if(name === '' || price === '' || totalStock === '' || description === ''){
@@ -59,55 +62,52 @@ const CreateProduct: FC<CreateProductProps> = ({ navigation }) => {
             setDescError('')   
         }
     }
-      
 
-    const create = () => {
-        Keyboard.dismiss()
+    const save = () => {
         setLoading(true)
         const inventory = products
+        const prodIndex = inventory.findIndex(item => item.id === ID)
+
         const productObject = {
-            id: `BLM_${inventory.length + 1}`, 
+            id: ID, 
             name: titleCase(name), 
-            price: Number(price), 
+            price: Number(price),
             totalStock: Number(totalStock),
             description: description,
-            deleted: false
+            deleted: item.deleted
         }
-        const newProduct = [...inventory, productObject]
+        inventory.splice(prodIndex, 1, productObject)
         dispatch({
-            type: 'update_inventory',
-            payload: productObject
+            type: 'set_inventory',
+            payload: inventory
         })
-        cacheInventory(newProduct)
+        cacheInventory(inventory)
         setTimeout(() => {
             setLoading(false)
-            setToasts([...toasts, 'Product created successfully'])
-            setName('')
-            setPrice('')
-            setTotalStock('')
-            setDescription('')
+           setToasts([...toasts, 'Product edited successfully'])
         }, 2500)
-    };
+    }
 
     const { 
         container, 
         wrapper, 
         header, 
-        buttonStyle, 
-        inputStyle, 
+        buttonStyle,  
+        backArrow, 
+        headerText, 
         introText, 
-        backArrow
+        inputStyle 
     } = styles;
-    const { textPoppinsBold, centerContentStyle, flexRow } = GStyles;
+    const { flexRow, textPoppinsBold, centerContentStyle } = GStyles;
 
     return(
         <SafeAreaView style={container}>
-            <StatusBar 
+             <StatusBar 
                 translucent={true} 
                 barStyle={'light-content'}
                 backgroundColor="rgba(98, 47, 181, 1)" 
             />
-            <LinearGradient 
+             <LinearGradient 
                 colors={['rgba(98, 47, 181, 1)', 'rgba(27, 15, 54, 1)']}
                 style={wrapper}
                 start={{x: 0.5, y: 0}}>
@@ -115,29 +115,39 @@ const CreateProduct: FC<CreateProductProps> = ({ navigation }) => {
                     <Pressable 
                         onPress={() => navigation.goBack()} 
                         style={[backArrow, centerContentStyle]}>
-                        <Icon name="chevron-left" size={20} color='#000' />
+                            <Icon name="chevron-left" size={fontSz(20)} color='#000' />
                     </Pressable>
+                    <MyText style={[headerText, textPoppinsBold]}>
+                        {item?.name}
+                    </MyText>
                 </View>
                 <ScrollView 
                     keyboardShouldPersistTaps='always'
                     showsVerticalScrollIndicator={false}>
                     <MyText style={[textPoppinsBold, introText]}>
-                        Add a new product to the inventory
+                        Edit & Save an item.
                     </MyText>
                     <CustomInput 
-                        placeholder='Name'
+                        placeholder={item?.name ? item.name : 'Name'}
                         value={name}
-                        onChangeText={(value: string) => setName(value)}
+                        onChangeText={
+                            (value: string) => {
+                                setName(value)
+                            }}
                         textInputStyle={inputStyle}
-                        autoFocus
-                        maxLength={50} 
+                        autoFocus 
+                        maxLength={50}
                         error={nameError !== ''}
-                        errorMsg={nameError}
+                        errorMsg={nameError} 
                     />
                     <CustomInput 
-                        placeholder='Price'
+                        placeholder={
+                            formatPrice("en-US", 'USD', item.price.toString())
+                        }
                         value={price}
-                        onChangeText={(value: string) => setPrice(value)}
+                        onChangeText={(value: string) => {
+                            setPrice(value)
+                        }}
                         textInputStyle={inputStyle}
                         keyboard='numeric' 
                         maxLength={8} 
@@ -145,7 +155,7 @@ const CreateProduct: FC<CreateProductProps> = ({ navigation }) => {
                         errorMsg={priceError}
                     />
                     <CustomInput 
-                        placeholder='Total Stock'
+                        placeholder={item?.totalStock ? item?.totalStock.toString() : 'Total Stock'}
                         value={totalStock}
                         onChangeText={(value: string) => setTotalStock(value)}
                         textInputStyle={inputStyle}
@@ -155,7 +165,7 @@ const CreateProduct: FC<CreateProductProps> = ({ navigation }) => {
                         errorMsg={stockError}
                     />
                     <CustomInput 
-                        placeholder='Description'
+                        placeholder={item?.description ? item.description : 'Description'}
                         value={description}
                         multiline={true}
                         onChangeText={(value: string) => handleDescription(value)}
@@ -165,15 +175,14 @@ const CreateProduct: FC<CreateProductProps> = ({ navigation }) => {
                         errorMsg={descError} 
                     />
                     <CustomButton 
-                        buttonText='Add'
+                        buttonText='Save'
                         buttonStyle={buttonStyle}
                         disabled={disabled()}
-                        onPress={() => create()}
+                        onPress={() => save()}
                         loading={loading}
                     />
                 </ScrollView>
-            </LinearGradient>
-            <View style={styles.toast}>
+                <View style={styles.toast}>
                 {toasts.map((toast, index) => (
                     <CustomToast
                         key={index.toString()}
@@ -187,20 +196,21 @@ const CreateProduct: FC<CreateProductProps> = ({ navigation }) => {
                         }}
                     />
                 ))}
-            </View>
+                </View>
+            </LinearGradient>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-   container: {
+    container: {
         backgroundColor: 'rgba(98, 47, 181, 1)',
-        paddingTop: hp(34),
         flex: 1
    },
    wrapper: {
         paddingHorizontal: wp(14),
         marginTop: hp(15),
+        paddingTop: hp(34),
         flex: 1,
     },
     header: {
@@ -214,16 +224,21 @@ const styles = StyleSheet.create({
         borderRadius: hp(6),
         backgroundColor: '#e1d5f5',
     },
-    buttonStyle: {
-        marginTop: hp(40),
-    },
-    inputStyle: {
-        marginVertical: hp(5)
+    headerText: {
+        color: colors.white,
+        fontSize: fontSz(20),
+        marginLeft: wp(10)
     },
     introText: {
         color: colors.white, 
         fontSize: fontSz(25), 
         marginVertical: hp(20)
+    },
+    buttonStyle: {
+        marginTop: hp(40),
+    },
+    inputStyle: {
+        marginVertical: hp(5)
     },
     toast: {
         position: 'absolute',
@@ -233,4 +248,4 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 });
-export default CreateProduct;
+export default Edit;

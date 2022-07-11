@@ -38,10 +38,10 @@ export const titleCase = (str: string) => {
 }
 
 export const shortenXterLength = (string: string, number: number) => {
-    if(string.length < number) {
+    if(string?.length < number) {
         return string
     }
-    return `${string.slice(0, number)}...`
+    return `${string?.slice(0, number)}...`
 }
 
 export const formatPrice = (locale, currency, price) => {

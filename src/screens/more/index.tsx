@@ -1,22 +1,27 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, ToastAndroid } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
 import MedIcon from 'react-native-vector-icons/Ionicons';
-import { MyText, CustomButton } from '../../utils/common/index'
+import { MyText, CustomButton } from '../../utils/common/index';
+import CustomToast from '../../components/general/CustomToast';
 import colors from '../../utils/colors';
 import GStyles from '../../assets/styles/GeneralStyles'
 import ListRow from '../../components/products/ListRow';
 import { clearCachedData, clearData } from '../../utils/helpers';
 import { fontSz, hp, wp } from '../../utils/constants';
+import { useUser } from '../../context/providers/UserContext';
+import { useProduct } from '../../context/providers/ProductContext';
 
 interface MoreProps {
     navigation?: NavigationProp
 }
 
 const More: FC<MoreProps> = ({ navigation }) => {
-
+    const { dispatch } = useUser();
+    const { productDispatch } = useProduct();
+    const [toasts, setToasts] = useState([]);
     const toInventory = () => {
         navigation.navigate('Product', {screen: 'Inventory'})
     }
@@ -30,27 +35,20 @@ const More: FC<MoreProps> = ({ navigation }) => {
     }
 
     const handleSignOut = async () => {
-        // dispatch(clearData())
+        dispatch({type: 'clear_user'})
+        productDispatch({type: 'clear_inventory'})
        await clearData().then(
         navigation.reset({
             index: 0,
             routes: [{name: 'Login'}],
         })
        )
-        // ToastAndroid.showWithGravity(
-        //     'Data Cleared',
-        //     ToastAndroid.LONG,
-        //     ToastAndroid.TOP
-        // )
     }
 
     const handleClearCache = () => {
-        // dispatch(clearData())
-        clearCachedData()
-        ToastAndroid.showWithGravity(
-            'Cache Cleared',
-            ToastAndroid.LONG,
-            ToastAndroid.TOP
+        productDispatch({type: 'clear_inventory'})
+        clearCachedData().then(
+            setToasts([...toasts, 'Cache Cleared'])
         )
     }
 
@@ -121,6 +119,21 @@ const More: FC<MoreProps> = ({ navigation }) => {
                         </View>
                     </View>
             </LinearGradient>
+            <View style={styles.toast}>
+                {toasts.map((toast, index) => (
+                    <CustomToast
+                        key={index.toString()}
+                        toast={toast}
+                        onHide={() => {
+                            setToasts((toasts) =>
+                            toasts.filter(
+                                (currentToast) =>
+                                currentToast !== toast
+                            ))
+                        }}
+                    />
+                ))}
+            </View>
         </SafeAreaView>
     );
 }
@@ -150,6 +163,13 @@ const styles = StyleSheet.create({
         marginBottom: hp(120),
         borderWidth: 1,
         borderColor: 'rgba(255, 81, 0, 1)'
-    }
+    },
+    toast: {
+        position: 'absolute',
+        top: hp(35),
+        left: 0,
+        right: 0,
+        alignItems: 'center',
+    },
 });
 export default More;

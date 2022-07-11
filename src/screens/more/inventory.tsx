@@ -50,15 +50,17 @@ const Inventory: FC<InventoryProps> = ({ navigation }) => {
 
     const deleteProduct = (data) => {
         setLoading(true)
-        const {id, name, prices, deleted } = data
+        const {id, name, price, deleted, totalStock, description } = data
         const inventory = products
         const prodIndex = inventory.findIndex(item => item.id === id)
         
         const productObject = {
             id, 
             name, 
-            prices, 
-            deleted: true
+            price,
+            totalStock,
+            description,
+            deleted: !deleted
         }
         inventory.splice(prodIndex, 1, productObject)
         dispatch({
@@ -74,7 +76,7 @@ const Inventory: FC<InventoryProps> = ({ navigation }) => {
     }
 
     const renderItem = useCallback(({item, index}) => {
-        const { name, id, prices, deleted } = item
+        const { name, id, price, deleted } = item;
         return(
             <React.Fragment>
                 <Animatable.View
@@ -87,7 +89,7 @@ const Inventory: FC<InventoryProps> = ({ navigation }) => {
                 >
                     <EditRow
                         name={name}
-                        prices={prices}
+                        price={price}
                         item={item}
                         deleteItem={() => openModal(item)}
                         disabled={deleted}

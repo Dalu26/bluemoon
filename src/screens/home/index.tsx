@@ -33,7 +33,6 @@ const Home: FC<HomeProps> = ({ navigation }) => {
     const getAvailableProducts = (products: []) => {
         const availableProd = products.filter(item => item.deleted !== true)
         setAvailableProducts(availableProd)
-        console.log(availableProd, 'availabale')
     }
 
     const toCreateProduct = () => {
