@@ -1,10 +1,11 @@
 import React, { useState, FC } from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar, Pressable, ScrollView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar, Pressable, ScrollView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { NavigationProp } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { MyText, CustomInput, CustomButton } from '../../utils/common/index';
 import CustomToast from '../../components/general/CustomToast';
+import AlertModal from '../../components/general/AlertModal';
 import { cacheInventory, titleCase , formatPrice } from '../../utils/helpers';
 import colors from '../../utils/colors';
 import GStyles from '../../assets/styles/GeneralStyles';
@@ -31,7 +32,9 @@ const Edit: FC<EditProps> = ({ navigation, route }) => {
     const [priceError, setPriceError] = useState('');
     const [stockError, setStockError] = useState('');
     const [descError, setDescError] = useState('');
-    const [loading, setLoading] = useState(false)
+    const [showModal,setShowModal] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
 
     const disabled = () => {
         if(name === '' || price === '' || totalStock === '' || description === ''){
@@ -41,6 +44,15 @@ const Edit: FC<EditProps> = ({ navigation, route }) => {
             return true
         }
         return false
+    }
+
+    const openModal = (item) => {
+        setItemToDelete(item)
+        setShowModal(showModal => !showModal)
+    }
+
+    const closeModal = () => {
+        setShowModal(false)
     }
 
     const validateDescription = (value: string) => {
@@ -85,6 +97,38 @@ const Edit: FC<EditProps> = ({ navigation, route }) => {
         setTimeout(() => {
             setLoading(false)
            setToasts([...toasts, 'Product edited successfully'])
+        }, 2500)
+    }
+
+    const deleteProduct = (data) => {
+        setLoading(true)
+        const {id, name, price, deleted, totalStock, description } = data
+        const inventory = products
+        const prodIndex = inventory.findIndex(item => item.id === id)
+        
+        const productObject = {
+            id, 
+            name, 
+            price,
+            totalStock,
+            description,
+            deleted: !deleted
+        }
+        inventory.splice(prodIndex, 1, productObject)
+        dispatch({
+            type: 'set_inventory',
+            payload: inventory
+        })
+        cacheInventory(inventory);
+        setTimeout(() => {
+            closeModal();
+            setLoading(false);
+          setToasts([...toasts, 'Product deleted successfully']);
+          setName('');
+          setPrice('');
+          setDescription('');
+          setTotalStock('');
+          navigation.goBack();
         }, 2500)
     }
 
@@ -181,6 +225,11 @@ const Edit: FC<EditProps> = ({ navigation, route }) => {
                         onPress={() => save()}
                         loading={loading}
                     />
+                    <TouchableOpacity 
+                        onPress={() => openModal(item)}
+                        style={styles.deleteWrp}>
+                        <MyText style={styles.textDelete}>Delete</MyText>
+                    </TouchableOpacity>
                 </ScrollView>
                 <View style={styles.toast}>
                 {toasts.map((toast, index) => (
@@ -198,6 +247,15 @@ const Edit: FC<EditProps> = ({ navigation, route }) => {
                 ))}
                 </View>
             </LinearGradient>
+            <AlertModal 
+                item={itemToDelete} 
+                visible={showModal} 
+                close={() => closeModal()}
+                deleteItem={(data: any) => deleteProduct(data)}
+                title={'Delete'}
+                loading={loading}
+                textDeleteOrRestore={'Deleting...'} 
+            />
         </SafeAreaView>
     );
 }
@@ -239,6 +297,20 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         marginVertical: hp(5)
+    },
+    deleteWrp: {
+        alignSelf: 'center',
+        marginTop: hp(30),
+        borderWidth: 0.5,
+        borderColor: '#DC143C',
+        paddingHorizontal: wp(10),
+        paddingVertical: hp(3),
+        borderRadius: hp(4),
+        backgroundColor: 'rgba(220, 20, 60, 0.1)'
+    },
+    textDelete: {
+        fontSize: fontSz(16),
+        color: '#DC143C'
     },
     toast: {
         position: 'absolute',

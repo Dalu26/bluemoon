@@ -85,8 +85,7 @@ const Inventory: FC<InventoryProps> = ({ navigation }) => {
                     duration={700}
                     useNativeDriver={true}
                     delay={400 + index * 100}
-                    style={[{width: '100%'}]}
-                >
+                    style={[{width: '100%'}]}>
                     <EditRow
                         name={name}
                         price={price}
