@@ -14,7 +14,7 @@ const Stack = createStackNavigator();
 export function HomeStack(){
     return(
         <Stack.Navigator 
-            initialRouteName="Home" 
+            initialRouteName="Homescreen" 
             options={{ gestureEnabled: true }}>
             <Stack.Screen 
                 name="Homescreen" 
@@ -30,7 +30,7 @@ export function HomeStack(){
 export function MoreStack(){
     return(
         <Stack.Navigator 
-            initialRouteName="More"
+            initialRouteName="Morescreen"
             screenOptions={{headerShown: false}} 
             options={{gestureEnabled: true}}>
             <Stack.Screen 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { CardStyleInterpolators } from '@react-navigation/stack';
 import { NavigationState } from '@react-navigation/native';
@@ -12,7 +12,7 @@ interface MyTabProps {
  navigation?: NavigationState
 }
 
-const MyTab: React.FC<MyTabProps> = ({ navigation }) => {
+const MyTab: FC<MyTabProps> = ({ navigation }) => {
     return(
       <Tab.Navigator 
         screenOptions={{swipeEnabled: false, lazy: false, headerShown: false}} 
