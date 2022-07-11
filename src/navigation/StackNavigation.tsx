@@ -1,7 +1,6 @@
 import React from 'react';
 import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
 import Home from '../screens/home/index';
-// import Details from '../screens/home/details';
 
 import More from '../screens/more';
 import CreateProduct from '../screens/more/createProduct';
@@ -23,15 +22,6 @@ export function HomeStack(){
                 options={{ headerShown: false, 
                     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }} 
             />
-            {/* <Stack.Screen 
-                name="details" 
-                component={Details} 
-                options={() => ({ headerShown: false,
-                    gestureEnabled: false, 
-                    transitionSpec: transitionSpec, 
-                    cardStyleInterpolator: CardStyleInterpolators.forModalPresentationIOS,
-                })}
-            /> */}
         </Stack.Navigator>
     );
 }
