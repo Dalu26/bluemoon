@@ -22,6 +22,7 @@ const More: FC<MoreProps> = ({ navigation }) => {
     const { dispatch } = useUser();
     const { productDispatch } = useProduct();
     const [toasts, setToasts] = useState([]);
+
     const toInventory = () => {
         navigation.navigate('Product', {screen: 'Inventory'})
     }
@@ -160,9 +161,9 @@ const styles = StyleSheet.create({
     },
     cdbuttonStyle: {
         backgroundColor: 'rgba(255, 81, 0, 0.1)',
-        marginBottom: hp(120),
         borderWidth: 1,
-        borderColor: 'rgba(255, 81, 0, 1)'
+        borderColor: 'rgba(255, 81, 0, 1)',
+        marginBottom: hp(120),
     },
     toast: {
         position: 'absolute',
