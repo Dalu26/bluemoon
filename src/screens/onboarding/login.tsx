@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { MyText, CustomButton, CustomInput } from '../../utils/common/index';
 import { wp, hp, fontSz } from '../../utils/constants';
 import colors from '../../utils/colors';
-import GoogleIcon from '../../assets/svgs/login/google.svg';
+import GoogleIcon  from '../../assets/svgs/login/google.svg';
 import AppleIcon from '../../assets/svgs/login/apple.svg';
 import { setUser } from '../../utils/helpers';
 
@@ -39,6 +39,7 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
         setTimeout(() => {
             if(username === ''){
                 setUsernameErrorMsg('Email is required');
+                setloading(false);
             } else if (!username.includes('@') || username.length < 2){
                 setUsernameErrorMsg('Input a valid email');
                 setloading(false);
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
     },
     buttonStyle: {
         height: hp(76),
-        marginBottom: hp(60)
+        marginBottom: hp(20)
     },
     textStyle: {
         fontSize: fontSz(28)

@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useContext } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, Pressable, ScrollView, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { NavigationProp } from '@react-navigation/native';
@@ -10,23 +10,32 @@ import { cacheInventory, titleCase , formatPrice } from '../../utils/helpers';
 import colors from '../../utils/colors';
 import GStyles from '../../assets/styles/GeneralStyles';
 import { hp, wp, fontSz } from '../../utils/constants';
-import { useProduct } from '../../context/providers/ProductContext';
+import { ProductStateContext } from '../../context/providers/ProductContext';
 
 interface EditProps {
     navigation?: NavigationProp,
     route?: NavigationProp
 }
 
+interface ProductProps {
+    id?: string, 
+    name?: string, 
+    price?: number,
+    totalStock?: number,
+    description?: string,
+    deleted?: boolean
+}
+
 const Edit: FC<EditProps> = ({ navigation, route }) => {
     const item = route.params;
-    const ID = item.id;
-    const { state, productDispatch } = useProduct();
-    const products = state.inventory;
-    const dispatch = productDispatch;
+    const ID = item?.id;
+    const context = useContext(ProductStateContext);
+    const products = context?.state?.inventory;
+    const dispatch = context?.productDispatch;
     const [toasts, setToasts] = useState([]);
     const [name, setName] = useState(item?.name);
-    const [price, setPrice] = useState(item.price.toString());
-    const [totalStock, setTotalStock] = useState(item?.totalStock.toString());
+    const [price, setPrice] = useState(item?.price?.toString());
+    const [totalStock, setTotalStock] = useState(item?.totalStock?.toString());
     const [description, setDescription] = useState(item?.description);
     const [nameError, setNameError] = useState('');
     const [priceError, setPriceError] = useState('');
@@ -46,7 +55,7 @@ const Edit: FC<EditProps> = ({ navigation, route }) => {
         return false
     }
 
-    const openModal = (item) => {
+    const openModal = (item: any) => {
         setItemToDelete(item)
         setShowModal(showModal => !showModal)
     }
@@ -78,15 +87,15 @@ const Edit: FC<EditProps> = ({ navigation, route }) => {
     const save = () => {
         setLoading(true)
         const inventory = products
-        const prodIndex = inventory.findIndex(item => item.id === ID)
+        const prodIndex = inventory?.findIndex(item => item?.id === ID)
 
-        const productObject = {
+        const productObject: ProductProps = {
             id: ID, 
             name: titleCase(name), 
             price: Number(price),
             totalStock: Number(totalStock),
             description: description,
-            deleted: item.deleted
+            deleted: item?.deleted
         }
         inventory.splice(prodIndex, 1, productObject)
         dispatch({
@@ -100,11 +109,11 @@ const Edit: FC<EditProps> = ({ navigation, route }) => {
         }, 2500)
     }
 
-    const deleteProduct = (data) => {
+    const deleteProduct = (data: any) => {
         setLoading(true)
         const {id, name, price, deleted, totalStock, description } = data
         const inventory = products
-        const prodIndex = inventory.findIndex(item => item.id === id)
+        const prodIndex = inventory?.findIndex(item => item?.id === id)
         
         const productObject = {
             id, 
@@ -145,7 +154,7 @@ const Edit: FC<EditProps> = ({ navigation, route }) => {
     const { flexRow, textPoppinsBold, centerContentStyle } = GStyles;
 
     return(
-        <SafeAreaView style={container}>
+        <SafeAreaView testID='edit' style={container}>
              <StatusBar 
                 translucent={true} 
                 barStyle={'light-content'}
@@ -186,7 +195,7 @@ const Edit: FC<EditProps> = ({ navigation, route }) => {
                     />
                     <CustomInput 
                         placeholder={
-                            formatPrice("en-US", 'USD', item.price.toString())
+                            formatPrice("en-US", 'USD', item.price?.toString())
                         }
                         value={price}
                         onChangeText={(value: string) => {
@@ -199,7 +208,7 @@ const Edit: FC<EditProps> = ({ navigation, route }) => {
                         errorMsg={priceError}
                     />
                     <CustomInput 
-                        placeholder={item?.totalStock ? item?.totalStock.toString() : 'Total Stock'}
+                        placeholder={item?.totalStock ? item?.totalStock?.toString() : 'Total Stock'}
                         value={totalStock}
                         onChangeText={(value: string) => setTotalStock(value)}
                         textInputStyle={inputStyle}
@@ -226,6 +235,7 @@ const Edit: FC<EditProps> = ({ navigation, route }) => {
                         loading={loading}
                     />
                     <TouchableOpacity 
+                        testID='delete-item'
                         onPress={() => openModal(item)}
                         style={styles.deleteWrp}>
                         <MyText style={styles.textDelete}>Delete</MyText>

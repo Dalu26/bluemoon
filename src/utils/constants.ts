@@ -1,5 +1,5 @@
-import { Dimensions, StatusBar, Platform, PixelRatio } from 'react-native';
-import { RFValue, RFPercentage } from 'react-native-responsive-fontsize';
+import { Dimensions, PixelRatio } from 'react-native';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 
 export const SCREEN_WIDTH = Dimensions.get('screen').width;
 export const SCREEN_HEIGHT = Dimensions.get('screen').height;
@@ -17,7 +17,7 @@ export const FADE_IN = {
 }
 
 
-const widthPercentageToDP = widthPercent => {
+const widthPercentageToDP = (widthPercent: number | string) => {
     // Parse string percentage input and convert it to number.
     const elemWidth = typeof widthPercent === "number" ? widthPercent : parseFloat(widthPercent);
   
@@ -26,7 +26,7 @@ const widthPercentageToDP = widthPercent => {
     return PixelRatio.roundToNearestPixel(SCREEN_WIDTH * elemWidth / 100);
 };
 
-const heightPercentageToDP = (heightPercent) => {
+const heightPercentageToDP = (heightPercent: number | string) => {
     // Parse string percentage input and convert it to number.
     const elemHeight = typeof heightPercent === "number" ? heightPercent : parseFloat(heightPercent);
   
@@ -35,39 +35,17 @@ const heightPercentageToDP = (heightPercent) => {
     return PixelRatio.roundToNearestPixel(SCREEN_HEIGHT * elemHeight / 100);
 };
 
-export const hp = val => {
+export const hp = (val: number) => {
   // get scaled height equivalent of design height
   const num = val / 8.44;
   return heightPercentageToDP(num);
 };
 
-export const wp = val => {
+export const wp = (val: number) => {
   // get scaled width equivalent of design width
   const num = val / 3.88;
   return widthPercentageToDP(num);
 };
 
-export const fontSz = val => RFPercentage(val / 7.6);
+export const fontSz = (val: number) => RFPercentage(val / 7.6);
 
-export const listenOrientationChange = that => {
-    Dimensions.addEventListener('change', newDimensions => {
-      // Retrieve and save new dimensions
-      SCREEN_WIDTH = newDimensions.window.width;
-      SCREEN_HEIGHT = newDimensions.window.height;
-  
-      // Trigger screen's rerender with a state update of the orientation variable
-      that.setState({
-        orientation: SCREEN_WIDTH < SCREEN_HEIGHT ? 'portrait' : 'landscape'
-      });
-    });
-  };
-  
-  /**
-   * Wrapper function that removes orientation change listener and should be invoked in
-   * componentWillUnmount lifecycle method of every class component (UI screen) that
-   * listenOrientationChange function has been invoked. This should be done in order to
-   * avoid adding new listeners every time the same component is re-mounted.
-   */
-  export const removeOrientationListener = () => {
-    Dimensions.remove('change', () => {});
-  };

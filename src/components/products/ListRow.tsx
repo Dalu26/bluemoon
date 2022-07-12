@@ -15,10 +15,10 @@ interface ListRowProps {
 
 const ListRow: FC<ListRowProps> = ({ icon, title, subtitle, onPress }) => {
     const { container, titleText, iconContainer, subtitleText, titleContainer } = styles;
-    const { textPoppins, textPoppinsMedium, flexRow, centerContentStyle, textPoppinsSemiBold } = GStyles;
+    const { textPoppins, flexRow, centerContentStyle, textPoppinsSemiBold } = GStyles;
 
     return(
-        <Pressable onPress={onPress} style={[container, flexRow]}>
+        <Pressable testID='list-row' onPress={onPress} style={[container, flexRow]}>
             <View style={[iconContainer, centerContentStyle]}>
                 {icon}
             </View>

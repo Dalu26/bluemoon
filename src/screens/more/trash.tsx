@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState, FC } from 'react';
+import React, { useEffect, useCallback, useState, FC, useContext } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, Pressable, FlatList } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { NavigationProp } from '@react-navigation/native';
@@ -13,16 +13,16 @@ import ListEmpty from '../../components/general/ListEmpty';
 import AlertModal from '../../components/general/AlertModal';
 import { cacheInventory } from '../../utils/helpers';
 import { hp, wp, fontSz, FADE_IN } from '../../utils/constants';
-import { useProduct } from '../../context/providers/ProductContext';
+import { ProductStateContext } from '../../context/providers/ProductContext';
 
 interface TrashProps {
     navigation?: NavigationProp
 }
 
 const Trash: FC<TrashProps> = ({ navigation }) => {
-    const { state, productDispatch } = useProduct();
-    const products = state.inventory;
-    const dispatch = productDispatch;
+    const context = useContext(ProductStateContext);
+    const products = context?.state?.inventory;
+    const dispatch = context?.productDispatch;
     const [deletedProducts, setDeletedProducts] = useState([]);
     const [itemToRestore, setItemToRestore] = useState(null);
     const [toasts, setToasts] = useState([]);
@@ -43,7 +43,7 @@ const Trash: FC<TrashProps> = ({ navigation }) => {
     }
 
     const getDeletedProducts = async () => {
-       const binProducts = await products.filter(item => item.deleted === true)
+       const binProducts = await products?.filter(item => item?.deleted === true)
        setDeletedProducts(binProducts)
     }
 
@@ -51,7 +51,7 @@ const Trash: FC<TrashProps> = ({ navigation }) => {
         setLoading(true)
         const {id, name, price, deleted, totalStock, description } = data
         const inventory = products
-        const prodIndex = inventory.findIndex(item => item.id === id)
+        const prodIndex = inventory.findIndex(item => item?.id === id)
         
         const productObject = {
             id, 

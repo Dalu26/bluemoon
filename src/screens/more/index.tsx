@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useContext } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -11,16 +11,18 @@ import GStyles from '../../assets/styles/GeneralStyles'
 import ListRow from '../../components/products/ListRow';
 import { clearCachedData, clearData } from '../../utils/helpers';
 import { fontSz, hp, wp } from '../../utils/constants';
-import { useUser } from '../../context/providers/UserContext';
-import { useProduct } from '../../context/providers/ProductContext';
+import { useUser, UserStateContext } from '../../context/providers/UserContext';
+import { ProductStateContext } from '../../context/providers/ProductContext';
 
 interface MoreProps {
     navigation?: NavigationProp
 }
 
 const More: FC<MoreProps> = ({ navigation }) => {
-    const { dispatch } = useUser();
-    const { productDispatch } = useProduct();
+    const userContext = useContext(UserStateContext);
+    const dispatch = userContext?.dispatch;
+    const context = useContext(ProductStateContext);
+    const productDispatch = context?.productDispatch;
     const [toasts, setToasts] = useState([]);
 
     const toInventory = () => {
