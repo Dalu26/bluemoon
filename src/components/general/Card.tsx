@@ -38,6 +38,7 @@ const Card: FC<CardProps> = ({ name, price, item, description, totalStock }) => 
     const { textPoppinsSemiBold, textPoppinsBold } = GStyles
     return(
         <View 
+            testID='card'
             style={[container]}>
                 <TouchableOpacity 
                     onPress={() => toEdit()}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, { useState, useEffect, FC, useContext } from 'react';
 import { 
     View, 
     StyleSheet, 
@@ -18,23 +18,25 @@ import AntIcon from 'react-native-vector-icons/AntDesign';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import { MyText } from '../../utils/common/index';
+import Card from '../../components/general/Card';
+import ListEmpty from '../../components/general/ListEmpty';
 import colors from '../../utils/colors';
 import GStyles from '../../assets/styles/GeneralStyles';
 import { fontSz, wp, hp, FADE_IN } from '../../utils/constants';
-import { useProduct } from '../../context/providers/ProductContext';
-import Card from '../../components/general/Card';
-import ListEmpty from '../../components/general/ListEmpty';
+import { ProductStateContext } from '../../context/providers/ProductContext';
+
 
 interface HomeProps {
     navigation?: NavigationProp,
 }
 
 const Home: FC<HomeProps> = ({ navigation }) => {
-    const { state } = useProduct();
+    const context = useContext(ProductStateContext);
+    const products = context?.state?.inventory;
     const [showSearch, setShowSearch] = useState(false);
-    const products = state.inventory;
     const isFocused = useIsFocused();
-    const [options, setOptions] = useState(false);
+    const [focused, setFocused] = useState<any>();
+    const [options, setOptions] = useState<boolean>(false);
     const [availableProducts, setAvailableProducts] = useState([]);
     const [searchAvailableProds, setSearchAvailapleProds] = useState([]);
 
@@ -56,7 +58,7 @@ const Home: FC<HomeProps> = ({ navigation }) => {
         toggleOptions()
         setTimeout(() => {
             toCreateProduct()
-        }, 200)
+        }, 300)
     }
 
     const toggleSearch = () => {
@@ -88,7 +90,7 @@ const Home: FC<HomeProps> = ({ navigation }) => {
     }
 
     const getAvailableProducts = (products: []) => {
-        const availableProd = products.filter(item => item.deleted !== true)
+        const availableProd = products?.filter(item => item?.deleted !== true)
         setAvailableProducts(availableProd);
         setSearchAvailapleProds(availableProd);
     }
@@ -123,7 +125,7 @@ const Home: FC<HomeProps> = ({ navigation }) => {
     const { textPoppinsBold, flexRow } = GStyles;
 
     return(
-        <SafeAreaView style={wrapper}>
+        <SafeAreaView testID='home' style={wrapper}>
             <StatusBar 
                 translucent={true} 
                 barStyle={'light-content'}
@@ -167,8 +169,8 @@ const Home: FC<HomeProps> = ({ navigation }) => {
                     showsVerticalScrollIndicator={false}
                     renderItem={renderItems}
                     contentContainerStyle={{
-                        flex: availableProducts.length === 0 ? 1 : 0,
-                        justifyContent: availableProducts.length === 0 ? 
+                        flex: availableProducts?.length === 0 ? 1 : 0,
+                        justifyContent: availableProducts?.length === 0 ? 
                         'center': 'flex-start',
                         paddingBottom: hp(75),
                     }}
@@ -178,15 +180,16 @@ const Home: FC<HomeProps> = ({ navigation }) => {
             </LinearGradient>
             <TouchableOpacity 
                 activeOpacity={1}
-                onPress={() => toggleOptions()}
-                style={[styles.buttonWrp, {width: options? 130: 60}]}>
+                onPress={() => !options ? toggleOptions() :
+                () =>{}}
+                style={[styles.buttonWrp, {width: options? wp(130): wp(60)}]}>
                     {options? 
                     <Pressable
                         onPress={() => {
                             toggleOptions();
                             setTimeout(() => {
                                 navigation.navigate('More')
-                            }, 200)
+                            }, 300)
                         }}
                         style={styles.buttonStyle}>
                         <AntIcon name='logout' size={fontSz(32)}color={colors.darkPurple} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, StatusBar, StyleSheet, SafeAreaView } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
@@ -6,9 +6,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import { MyText, CustomButton } from '../../utils/common/index';
 import { wp, hp, fontSz, FADE_IN } from '../../utils/constants';
 import { getUser, getInventory } from '../../utils/helpers';
-import { useUser } from '../../context/providers/UserContext';
-import { useProduct } from '../../context/providers/ProductContext';
-// import SvgIcon from '../../assets/svgs/splashscreen/bluemoon.svg';
+import { UserStateContext } from '../../context/providers/UserContext';
+import { ProductStateContext } from '../../context/providers/ProductContext';
+
 
 interface SplashscreenProps {
     navigation?: NavigationProp
@@ -16,8 +16,10 @@ interface SplashscreenProps {
 
 const SplashScreen: React.FC<SplashscreenProps> = ({ navigation }) => {
     const [auth, setAuth] = useState(false);
-    const { dispatch } = useUser();
-    const { productDispatch } = useProduct();
+    const prodContext = useContext(ProductStateContext);
+    const productDispatch = prodContext?.productDispatch;
+    const userContext = useContext(UserStateContext);
+    const dispatch = userContext?.dispatch;
 
     useEffect(() => {
         checkUser()

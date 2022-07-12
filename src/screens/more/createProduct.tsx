@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useContext } from 'react';
 import { StyleSheet, SafeAreaView, StatusBar, Pressable, ScrollView, Keyboard, View } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -9,16 +9,16 @@ import colors from '../../utils/colors';
 import GStyles from '../../assets/styles/GeneralStyles';
 import { cacheInventory, titleCase } from '../../utils/helpers';
 import { hp, wp, fontSz } from '../../utils/constants';
-import { useProduct } from '../../context/providers/ProductContext';
+import { ProductStateContext } from '../../context/providers/ProductContext';
 
 interface CreateProductProps {
     navigation?: NavigationProp
 }
 
 const CreateProduct: FC<CreateProductProps> = ({ navigation }) => {
-    const { state, productDispatch } = useProduct();
-    const products = state.inventory;
-    const dispatch = productDispatch;
+    const context = useContext(ProductStateContext);
+    const products = context?.state?.inventory;
+    const dispatch = context?.productDispatch;
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [totalStock, setTotalStock] = useState('');
@@ -66,7 +66,7 @@ const CreateProduct: FC<CreateProductProps> = ({ navigation }) => {
         setLoading(true)
         const inventory = products
         const productObject = {
-            id: `BLM_${inventory.length + 1}`, 
+            id: `BLM_${inventory?.length + 1}`, 
             name: titleCase(name), 
             price: Number(price), 
             totalStock: Number(totalStock),

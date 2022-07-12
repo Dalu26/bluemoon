@@ -6,6 +6,7 @@ import SplashScreen from '../screens/onboarding/splashscreen';
 import Login from '../screens/onboarding/login';
 import Tabs from './TabNavigation';
 import { OtherStack } from './StackNavigation';
+import { navigationRef } from './RootNavigation';
 
 enableScreens()
 
@@ -45,7 +46,7 @@ function AppNavigator() {
 
 export default function App() {
     return (
-      <NavigationContainer theme={DarkTheme}>
+      <NavigationContainer ref={navigationRef} theme={DarkTheme}>
         <AppNavigator />
       </NavigationContainer>
     );

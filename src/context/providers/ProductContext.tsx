@@ -1,13 +1,13 @@
-import React, { createContext, useReducer, useContext, ReactNode } from 'react';
+import * as React from 'react';
 
 type Action = {type: 'update_inventory', payload: any} | {type: 'clear_inventory', payload?: any} | {type: 'set_inventory', payload: any}
 type Dispatch = (action: Action) => void
 type State = {inventory: []}
-type ProductProviderProps = {children: ReactNode}
+type ProductProviderProps = {children: React.ReactNode}
 
-const ProductStateContext = createContext<
+const ProductStateContext = React.createContext<
   {state: State; productDispatch: Dispatch} | undefined
->(undefined)
+>(undefined!)
 
 function productReducer(state: State, action: Action) {
   switch (action.type) {
@@ -27,7 +27,7 @@ function productReducer(state: State, action: Action) {
 }
 
 function ProductProvider({children}: ProductProviderProps) {
-    const [state, productDispatch] = useReducer(productReducer, {inventory: []})
+    const [state, productDispatch] = React.useReducer(productReducer, {inventory: []})
     const value = {state, productDispatch}
 
   return (
@@ -38,11 +38,12 @@ function ProductProvider({children}: ProductProviderProps) {
 }
 
 function useProduct() {
-  const context = useContext(ProductStateContext)
-  if (context === undefined) {
+  const context = React.useContext(ProductStateContext);
+  console.log(context, 'context from products')
+  if (!context) {
     throw new Error('useProduct must be used within a ProductProvider')
   }
   return context
 }
 
-export { useProduct, ProductProvider }
+export { useProduct, ProductProvider, productReducer, ProductStateContext }

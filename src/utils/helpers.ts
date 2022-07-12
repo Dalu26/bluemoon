@@ -13,7 +13,8 @@ export const cacheInventory = async (inventory: any) => {
 export const getInventory = async () => {
     try {
         let inventory = await AsyncStorage.getItem('inventory')
-        return JSON.parse(inventory);
+        const products = JSON.parse(inventory!) 
+        return products;
     } catch (error) {
         return error;
     }
@@ -44,7 +45,7 @@ export const shortenXterLength = (string: string, number: number) => {
     return `${string?.slice(0, number)}...`
 }
 
-export const formatPrice = (locale, currency, price) => {
+export const formatPrice = (locale: string, currency: string, price:  number) => {
     return new Intl.NumberFormat(locale, {
         style: 'currency',
         currency
@@ -54,7 +55,7 @@ export const formatPrice = (locale, currency, price) => {
 export const setUser = async (userData: object) => {
     try {
         await AsyncStorage.setItem("userData", JSON.stringify(userData));
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error setting user data", error?.message);
     }
   }
@@ -62,7 +63,7 @@ export const setUser = async (userData: object) => {
   export const getUser = async () => {
     try {
         let user = await AsyncStorage.getItem("userData")
-        return JSON.parse(user);
+        return JSON.parse(user!);
     } catch (error) {
         return error;
     }

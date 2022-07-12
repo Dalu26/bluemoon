@@ -1,13 +1,17 @@
 import React from 'react';
 import { AppContextProvider } from './src/context/providers/AppContextProvider';
+import { UserProvider } from './src/context/providers/UserContext';
+import { ProductProvider } from './src/context/providers/ProductContext';
 import AppNavigator from './src/navigation/AppNavigation';
 
 const App = () => {
 
   return (
-    <AppContextProvider>
-      <AppNavigator />
-    </AppContextProvider>
+    <UserProvider>
+      <ProductProvider>
+        <AppNavigator />
+      </ProductProvider>
+    </UserProvider>
   );
 };
 

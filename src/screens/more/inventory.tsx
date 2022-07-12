@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState, FC } from 'react';
+import React, { useEffect, useCallback, useState, FC, useContext } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, Pressable, FlatList } from 'react-native';
 import { NavigationProp, useIsFocused } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
@@ -12,7 +12,7 @@ import EditRow from '../../components/general/EditRow';
 import AlertModal from '../../components/general/AlertModal';
 import ListEmpty from '../../components/general/ListEmpty';
 import { cacheInventory } from '../../utils/helpers';
-import { useProduct } from '../../context/providers/ProductContext';
+import { ProductStateContext } from '../../context/providers/ProductContext';
 import { hp, wp, fontSz, FADE_IN } from '../../utils/constants';
 
 interface InventoryProps {
@@ -20,9 +20,9 @@ interface InventoryProps {
 }
 
 const Inventory: FC<InventoryProps> = ({ navigation }) => {
-    const { state, productDispatch } = useProduct();
-    const products = state.inventory;
-    const dispatch = productDispatch;
+    const context = useContext(ProductStateContext);
+    const products = context?.state?.inventory;
+    const dispatch = context?.productDispatch;
     const isFocused = useIsFocused();
     const [showModal,setShowModal] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -102,7 +102,7 @@ const Inventory: FC<InventoryProps> = ({ navigation }) => {
     const { flexRow, textPoppinsBold, centerContentStyle } = GStyles;
 
     return(
-        <SafeAreaView style={container}>
+        <SafeAreaView testID='inventory' style={container}>
             <StatusBar 
                 translucent={true} 
                 barStyle={'light-content'}

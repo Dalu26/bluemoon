@@ -1,13 +1,13 @@
-import React, { createContext, useReducer, useContext, memo, ReactNode } from 'react';
+import * as React from 'react';
 
 type Action = {type: 'update_user', payload: any} | {type: 'clear_user', payload?: any}
 type Dispatch = (action: Action) => void
 type State = {user: {}}
-type UserProviderProps = {children: ReactNode}
+type UserProviderProps = {children: React.ReactNode}
 
-const UserStateContext = createContext<
+const UserStateContext = React.createContext<
   {state: State; dispatch: Dispatch} | undefined
->(undefined)
+>(undefined!)
 
 function userReducer(state: State, action: Action) {
   switch (action.type) {
@@ -24,7 +24,7 @@ function userReducer(state: State, action: Action) {
 }
 
 function UserProvider({children}: UserProviderProps) {
-    const [state, dispatch] = useReducer(userReducer, {user: {}})
+    const [state, dispatch] = React.useReducer(userReducer, {user: {}})
     const value = {state, dispatch}
 
   return (
@@ -35,11 +35,11 @@ function UserProvider({children}: UserProviderProps) {
 }
 
 function useUser() {
-  const context = useContext(UserStateContext)
+  const context = React.useContext(UserStateContext)
   if (context === undefined) {
     throw new Error('useUser must be used within a UserProvider')
   }
   return context
 }
 
-export { useUser, UserProvider }
+export { useUser, UserProvider, UserStateContext }

@@ -53,6 +53,7 @@ const AlertModal: FC<AlertModalProps> = ({
 
     return(
         <Modal 
+            testID='delete'
             visible={visible} 
             statusBarTranslucent 
             transparent 
