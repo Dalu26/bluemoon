@@ -132,12 +132,12 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
                     buttonStyle={styles.buttonStyle}
                     textStyle={styles.textStyle}
                 />
-                <TouchableOpacity style={styles.textWrapper}>
+                {/* <TouchableOpacity style={styles.textWrapper}>
                     <MyText style={styles.newUser}>
                         I’m new here 
                     </MyText>
                     <Icon name='arrowright' size={fontSz(20)} color={colors.white} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </LinearGradient>
         </ScrollView>
     )
