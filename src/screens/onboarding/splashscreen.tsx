@@ -57,6 +57,11 @@ const SplashScreen: React.FC<SplashscreenProps> = ({ navigation }) => {
        }
     }
 
+    const handleButtonPress = () => {
+        if(auth) return;
+        toLogin();
+    }
+
     return(
         <SafeAreaView style={styles.wrapper}>
            <StatusBar 
@@ -89,11 +94,7 @@ const SplashScreen: React.FC<SplashscreenProps> = ({ navigation }) => {
                         useNativeDriver={true} 
                         animation={FADE_IN}>
                         <CustomButton 
-                            onPress={() => {
-                                auth ? () => {}
-                                :
-                                toLogin()
-                            }}
+                            onPress={() => handleButtonPress()}
                             buttonText={'Get started'}
                         />
                     </Animatable.View>

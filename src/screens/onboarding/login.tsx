@@ -9,13 +9,12 @@ import colors from '../../utils/colors';
 import GoogleIcon  from '../../assets/svgs/login/google.svg';
 import AppleIcon from '../../assets/svgs/login/apple.svg';
 import { setUser } from '../../utils/helpers';
-
 interface LoginProps {
     navigation?: NavigationProp
 }
 
 const Login: React.FC<LoginProps> = ({ navigation }) => {
-    const [username, setusername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setpassword] = useState('');
     const [usernameErrorMsg, setUsernameErrorMsg] = useState('');
     const [passwordErrorMsg, setPasswordErrorMsg] = useState('');
@@ -74,8 +73,8 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
                     <MyText style={styles.header}>Login</MyText>
                     <MyText style={styles.description}>Enter your account details to login.</MyText>
                     <CustomInput
-                        value={username}
-                        onChangeText={(value: string) => setusername(value)} 
+                        value={email}
+                        onChangeText={(value: string) => setEmail(value)} 
                         autoFocus={true}
                         placeholder='Email'
                         keyboard='email-address'
